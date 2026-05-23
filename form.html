@@ -2140,10 +2140,10 @@ justify-content: center;
 
 <!-- NAV -->
 <nav id="topnav">
-  <a class="nav-brand" href="dietplan.html">Nutri<span>Plan</span></a>
+  <a class="nav-brand" href="index.html">Nutri<span>Plan</span></a>
   <div class="nav-right" style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;justify-content:flex-end;">
     <div class="nav-links">
-      <a href="dietplan.html">Dietplan</a>
+      <a href="index.html">Dietplan</a>
       <a href="education.html">Education</a>
       <a href="comments.html">Comments</a>
       <a href="messages.html" id="nav-msg-link" style="position:relative;">Messages<span id="nav-msg-dot" style="display:none;position:absolute;top:4px;right:6px;width:8px;height:8px;border-radius:50%;background:#dc2626;border:2px solid #fff;"></span></a>
@@ -3502,7 +3502,7 @@ window.createAccount = async function() {
     localStorage.setItem('nutriplan_uid', uid);
     localStorage.setItem('nutriplan_email', email);
     // New user registered — open the diet plan dashboard
-    window.location.href = 'dietplan.html';
+    window.location.href = 'index.html';
   } catch(e) {
     errEl.textContent = e.code === 'auth/email-already-in-use' ? 'An account with this email already exists. Please sign in instead.' : e.message;
     errEl.style.display = 'block';
@@ -3525,7 +3525,7 @@ window.signInExisting = async function() {
     localStorage.setItem('nutriplan_uid', uid);
     localStorage.setItem('nutriplan_email', email);
     // Signed in — open the diet plan dashboard
-    window.location.href = 'dietplan.html';
+    window.location.href = 'index.html';
   } catch(e) {
     errEl.textContent = (e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found') ? 'Incorrect email or password.' : e.message;
     errEl.style.display = 'block';
