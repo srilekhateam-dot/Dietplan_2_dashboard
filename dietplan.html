@@ -1753,9 +1753,9 @@
       <a href="messages.html">Messages</a>
 
     </div>
-    <a href="profile.html" class="nav-signin-btn" id="nav-signin-btn">Sign In</a>
+    <a href="index.html" class="nav-signin-btn" id="nav-signin-btn">Sign In</a>
     <div style="position:relative;flex-shrink:0;z-index:101;" id="nav-profile-wrap">
-      <button class="nav-profile-btn" id="nav-profile-btn" onclick="window.location.href='profile.html'" title="My Profile"></button>
+      <button class="nav-profile-btn" id="nav-profile-btn" onclick="window.location.href='index.html'" title="My Profile"></button>
     </div>
   </div>
 </nav>
@@ -1894,7 +1894,7 @@
       <div class="sb-profiles-section">
         <div class="sb-profiles-header">
           <span class="sb-profiles-label">Family Profiles</span>
-          <a href="profile.html#add-profile" class="sb-add-profile-btn">+ Add</a>
+          <a href="index.html#add-profile" class="sb-add-profile-btn">+ Add</a>
         </div>
         <div class="sb-profile-cards" id="sb-profile-cards">
           <div class="sb-no-profiles" id="sb-loading-profiles">
@@ -2573,7 +2573,7 @@ function renderPickerProfiles() {
   if (!container) return;
 
   if (!allProfiles || !allProfiles.length) {
-    container.innerHTML = `<div class="pp-no-profiles">No profiles yet.<br><a href="profile.html" style="color:var(--teal);font-weight:700;text-decoration:none;">+ Create one</a></div>`;
+    container.innerHTML = `<div class="pp-no-profiles">No profiles yet.<br><a href="index.html" style="color:var(--teal);font-weight:700;text-decoration:none;">+ Create one</a></div>`;
     return;
   }
 
@@ -2628,7 +2628,7 @@ function renderSidebarProfiles() {
   const container = document.getElementById('sb-profile-cards');
   if (!container) return;
   if (!allProfiles || !allProfiles.length) {
-    container.innerHTML = `<div class="sb-no-profiles">No profiles yet.<br><a href="profile.html" style="color:var(--teal);font-weight:700;text-decoration:none;">+ Create one</a></div>`;
+    container.innerHTML = `<div class="sb-no-profiles">No profiles yet.<br><a href="index.html" style="color:var(--teal);font-weight:700;text-decoration:none;">+ Create one</a></div>`;
     return;
   }
   container.innerHTML = allProfiles.map(p => {
