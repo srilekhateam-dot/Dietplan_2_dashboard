@@ -328,7 +328,7 @@
     <a href="index.html" class="nav-signin-btn" id="nav-signin-btn">Sign In</a>
     <!-- Shown when signed in -->
     <div style="position:relative;flex-shrink:0;z-index:101;" id="nav-profile-wrap">
-      <button class="nav-profile-btn" id="nav-profile-btn" onclick="window.location.href='profile.html'" title="My Profile"></button>
+      <button class="nav-profile-btn" id="nav-profile-btn" onclick="window.location.href='index.html'" title="My Profile"></button>
     </div>
   </div>
 </nav>
@@ -737,7 +737,7 @@ onAuthStateChanged(_auth, async user => {
     document.getElementById('my-queries-list').innerHTML = `
       <div class="login-prompt-box">
         <div style="font-size:1.8rem;margin-bottom:10px;">🔒</div>
-        <div><a href="profile.html">Sign in</a> to view your previous queries and admin replies.</div>
+        <div><a href="index.html">Sign in</a> to view your previous queries and admin replies.</div>
       </div>`;
   }
 });
