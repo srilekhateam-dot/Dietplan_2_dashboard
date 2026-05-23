@@ -1,0 +1,2249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NutriPlan — Nutrition Education</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --teal: #1a9e8f;
+    --teal-light: #e6f7f5;
+    --teal-dark: #14786c;
+    --bg: #f5f6f8;
+    --white: #ffffff;
+    --text: #1c2230;
+    --muted: #6b7280;
+    --border: #e2e5ea;
+    --card-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+  .nav-brand {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    color: var(--teal);
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .nav-brand span { color: var(--text); font-weight: 300; font-style: italic; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13.5px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    background: var(--teal-light);
+    color: var(--teal);
+  }
+
+  .nav-profile-btn { display:none; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:var(--teal); color:#fff; font-family:'Fraunces',serif; font-size:0.95rem; font-weight:600; cursor:pointer; border:none; flex-shrink:0; position:relative; transition:background 0.2s; }
+  .nav-profile-btn:hover { background:var(--teal-dark); }
+  .nav-profile-btn.show { display:flex; }
+  .nav-signin-btn { display:none; align-items:center; gap:6px; background:var(--teal); color:#fff; border:none; border-radius:20px; padding:7px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.2s; text-decoration:none; }
+  .nav-signin-btn:hover { background:var(--teal-dark); }
+  .nav-signin-btn.show { display:flex; }
+
+  /* LAYOUT */
+  .edu-layout {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    align-items: start;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: sticky; top: 80px;
+    padding: 32px 0 32px 0;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .sidebar-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+    padding: 0 16px;
+  }
+  .sidebar-nav { list-style: none; }
+  .sidebar-nav li a {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+    border-left: 2.5px solid transparent;
+    transition: all 0.2s;
+    border-radius: 0 8px 8px 0;
+  }
+  .sidebar-nav li a:hover,
+  .sidebar-nav li a.active {
+    color: var(--teal);
+    background: var(--teal-light);
+    border-left-color: var(--teal);
+  }
+  .sidebar-nav .sub-item a {
+    padding-left: 28px;
+    font-size: 12.5px;
+  }
+  .sidebar-section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: #979ca5;
+    padding: 10px 16px 4px;
+    display: block;
+  }
+
+  /* CONTENT */
+  .edu-content {
+    padding: 40px 0 80px 40px;
+  }
+
+  /* HERO */
+  .edu-hero {
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .edu-hero .badge {
+    display: inline-block;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    font-size: 11px;
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 12px;
+  }
+  .edu-hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 600; color: var(--text); line-height: 1.2; margin-bottom: 10px;
+  }
+  .edu-hero h1 em { color: var(--teal); font-style: italic; }
+  .edu-hero p { color: var(--muted); max-width: 560px; font-size: 15px; }
+  .edu-hero-img {
+    width: 100%; height: 180px;
+    background: linear-gradient(135deg, var(--teal-light) 0%, #d0f0eb 100%);
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 24px;
+    font-size: 4rem;
+    letter-spacing: 12px;
+  }
+
+  /* SECTION */
+  .edu-section {
+    margin-bottom: 60px;
+    scroll-margin-top: 80px;
+  }
+  .edu-section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem; font-weight: 600;
+    color: var(--text); margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--teal-light);
+  }
+  .edu-section h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem; font-weight: 600;
+    color: var(--text); margin: 24px 0 10px;
+  }
+  .edu-section h4 {
+    font-size: 0.95rem; font-weight: 700;
+    color: var(--teal-dark); margin: 16px 0 6px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .edu-section p { color: #374151; margin-bottom: 14px; }
+  .edu-section ul { padding-left: 20px; margin-bottom: 14px; }
+  .edu-section ul li { color: #374151; margin-bottom: 6px; }
+  .edu-section strong { color: var(--text); font-weight: 600; }
+
+  /* NUTRIENT OVERVIEW CARDS */
+  .nutrient-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .nutrient-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 22px 18px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: default;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .nutrient-card:hover {
+    border-color: var(--teal);
+    box-shadow: 0 4px 20px rgba(26,158,143,0.12);
+    transform: translateY(-2px);
+  }
+  .nutrient-card.clickable { cursor: pointer; }
+  .n-icon { font-size: 2rem; margin-bottom: 10px; }
+  .n-name { font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 4px; }
+  .n-desc { font-size: 12px; color: var(--muted); }
+
+  /* INFO BOX */
+  .info-box {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+  .info-box p { margin: 0; color: var(--teal-dark); font-size: 14px; }
+  .info-box strong { color: var(--teal-dark); }
+
+  /* WARNING BOX */
+  .warn-box {
+    background: #fff8e6;
+    border-left: 4px solid #f59e0b;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+  .warn-box p { margin: 0; color: #92400e; font-size: 14px; }
+
+  /* DEFINITION CARDS */
+  .def-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .def-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+  }
+  .def-card .def-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 6px;
+  }
+  .def-card p { font-size: 13.5px; color: var(--muted); margin: 0; }
+
+  /* CARB TYPES GRID */
+  .type-cards {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 20px 0;
+  }
+  .type-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    border-top: 4px solid var(--teal);
+  }
+  .type-card .ct-label {
+    font-weight: 700; font-size: 13.5px; color: var(--text); margin-bottom: 8px;
+  }
+  .type-card p { font-size: 13px; color: var(--muted); margin: 0; }
+
+  /* VISUAL BLOCK */
+  .carb-visual {
+    display: flex; align-items: center; gap: 24px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin: 24px 0;
+  }
+  .carb-img-box {
+    width: 140px; height: 120px; flex-shrink: 0;
+    background: linear-gradient(135deg, #fff8e6 0%, #fde8c8 100%);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+  }
+  .carb-text p { font-size: 14px; color: #374151; }
+
+  /* REQUIREMENT HIGHLIGHT */
+  .req-highlight {
+    background: linear-gradient(135deg, #1a9e8f 0%, #14786c 100%);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin: 24px 0;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;
+    text-align: center;
+  }
+  .req-item .req-val {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem; font-weight: 600;
+    margin-bottom: 4px; color: #fff;
+  }
+  .req-item .req-lbl { font-size: 12px; opacity: 0.8; }
+
+  /* VITAMIN ACCORDION */
+  .vitamin-accordion { margin: 20px 0; }
+  .vit-item {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .vit-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .vit-header:hover { background: var(--teal-light); }
+  .vit-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .vit-header-text { flex: 1; }
+  .vit-name { font-weight: 700; font-size: 14.5px; color: var(--text); }
+  .vit-tagline { font-size: 12.5px; color: var(--muted); }
+  .vit-badge {
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 20px; background: var(--teal-light); color: var(--teal-dark);
+    flex-shrink: 0;
+  }
+  .vit-chevron { color: var(--muted); font-size: 18px; transition: transform 0.2s; flex-shrink: 0; }
+  .vit-item.open .vit-chevron { transform: rotate(180deg); }
+  .vit-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .vit-item.open .vit-body { display: block; }
+  .vit-body-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;
+    margin: 16px 0;
+  }
+  .vit-info-card {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+  }
+  .vit-info-card .vic-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 6px;
+  }
+  .vit-info-card ul { padding-left: 14px; margin: 0; }
+  .vit-info-card ul li { font-size: 12.5px; color: var(--muted); margin-bottom: 3px; }
+  .vit-info-card p { font-size: 12.5px; color: var(--muted); margin: 0; }
+
+  /* RDA TABLE */
+  .rda-table-wrap {
+    margin-top: 18px;
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+  }
+  .rda-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .rda-table th {
+    background: var(--teal);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .rda-table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    color: #374151;
+    white-space: nowrap;
+  }
+  .rda-table tr:last-child td { border-bottom: none; }
+  .rda-table tr:nth-child(even) td { background: #f9fafb; }
+  .rda-table tr:hover td { background: var(--teal-light); }
+  .rda-table .row-highlight td { font-weight: 700; color: var(--text); }
+  .rda-table .group-header td {
+    background: #f0fdf9;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    padding: 6px 14px;
+  }
+
+  /* MINERAL SECTION */
+  .mineral-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0;
+  }
+  .mineral-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0;
+    overflow: hidden;
+  }
+  .mineral-card-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px;
+    background: var(--teal-light);
+    cursor: pointer;
+  }
+  .mineral-card-header .mc-icon { font-size: 1.4rem; }
+  .mineral-card-header .mc-name { font-weight: 700; font-size: 14px; color: var(--teal-dark); }
+  .mineral-card-header .mc-role { font-size: 12px; color: var(--teal); flex: 1; }
+  .mineral-card-header .mc-chevron { color: var(--teal); font-size: 16px; transition: transform 0.2s; }
+  .mineral-card.open .mc-chevron { transform: rotate(180deg); }
+  .mineral-card-body { display: none; padding: 14px 16px; }
+  .mineral-card.open .mineral-card-body { display: block; }
+  .mineral-card-body p { font-size: 13px; color: #374151; margin-bottom: 10px; }
+  .mineral-card-body ul { padding-left: 16px; margin-bottom: 10px; }
+  .mineral-card-body ul li { font-size: 12.5px; color: var(--muted); margin-bottom: 3px; }
+
+  /* SLEEP / WATER / ACTIVITY CARDS */
+  .lifestyle-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0;
+  }
+  .lifestyle-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+  .lifestyle-card .lc-icon { font-size: 2rem; margin-bottom: 10px; }
+  .lifestyle-card .lc-title { font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 6px; }
+  .lifestyle-card p { font-size: 13px; color: var(--muted); margin: 0; }
+
+  /* ACTIVITY AGE GROUPS */
+  .activity-groups {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 20px 0;
+  }
+  .activity-group {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    border-top: 4px solid var(--teal);
+  }
+  .activity-group .ag-label { font-weight: 700; font-size: 13.5px; color: var(--text); margin-bottom: 8px; }
+  .activity-group ul { padding-left: 14px; margin: 0; }
+  .activity-group ul li { font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+
+  /* SLEEP AGE TABLE */
+  .sleep-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    margin: 18px 0;
+  }
+  .sleep-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .sleep-table th {
+    background: var(--teal);
+    color: #fff;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .sleep-table td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--border);
+    color: #374151;
+  }
+  .sleep-table tr:last-child td { border-bottom: none; }
+  .sleep-table tr:nth-child(even) td { background: #f9fafb; }
+
+  /* BMI / BODY METRICS */
+  .metrics-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0;
+  }
+  .metric-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+  .metric-card .mc-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 10px;
+  }
+  .metric-card p { font-size: 13.5px; color: #374151; margin-bottom: 8px; }
+  .metric-card .formula-box {
+    background: var(--teal-light);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--teal-dark);
+    font-weight: 700;
+    margin: 12px 0;
+  }
+
+  .bmi-categories {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0;
+  }
+  .bmi-cat {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .bmi-cat.under { background: #dbeafe; color: #1d4ed8; }
+  .bmi-cat.normal { background: #dcfce7; color: #15803d; }
+  .bmi-cat.over { background: #fef9c3; color: #a16207; }
+  .bmi-cat.obese { background: #fee2e2; color: #b91c1c; }
+  .bmi-cat .bc-range { font-size: 12px; font-weight: 400; opacity: 0.8; }
+
+  /* BODY FAT TABLE */
+  .bf-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    margin: 16px 0;
+  }
+  .bf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .bf-table th {
+    background: var(--teal);
+    color: #fff;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+  .bf-table td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--border);
+    color: #374151;
+  }
+  .bf-table tr:last-child td { border-bottom: none; }
+  .bf-table tr:nth-child(even) td { background: #f9fafb; }
+
+  /* ACTIVITY FACTOR TABLE */
+  .af-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    margin: 16px 0;
+  }
+  .af-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .af-table th {
+    background: var(--teal);
+    color: #fff;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+  .af-table td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--border);
+    color: #374151;
+  }
+  .af-table tr:last-child td { border-bottom: none; }
+  .af-table tr:nth-child(even) td { background: #f9fafb; }
+
+  /* SECTION DIVIDER */
+  .section-part-label {
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 18px;
+  }
+  .section-part-label span {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    white-space: nowrap;
+  }
+  .section-part-label::before,
+  .section-part-label::after {
+    content: '';
+    height: 1px;
+    background: var(--border);
+    flex: 1;
+  }
+
+  /* BACK BUTTON */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--teal); font-weight: 600; font-size: 13.5px;
+    text-decoration: none; margin-bottom: 28px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: var(--teal-light);
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background: var(--teal); color: #fff; }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .edu-section { animation: fadeUp 0.4s ease both; }
+  .edu-section:nth-child(2) { animation-delay: 0.05s; }
+  .edu-section:nth-child(3) { animation-delay: 0.1s; }
+  .edu-section:nth-child(4) { animation-delay: 0.15s; }
+  .edu-section:nth-child(5) { animation-delay: 0.2s; }
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    .edu-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .edu-content { padding: 28px 0 60px; }
+    .nutrient-cards { grid-template-columns: repeat(2,1fr); }
+    .def-grid { grid-template-columns: 1fr; }
+    .type-cards { grid-template-columns: 1fr 1fr; }
+    .req-highlight { grid-template-columns: 1fr 1fr; }
+    .carb-visual { flex-direction: column; }
+    nav { padding: 0 16px; }
+    .vit-body-grid { grid-template-columns: 1fr; }
+    .mineral-grid { grid-template-columns: 1fr; }
+    .activity-groups { grid-template-columns: 1fr; }
+    .metrics-grid { grid-template-columns: 1fr; }
+    .bmi-categories { grid-template-columns: 1fr 1fr; }
+    nav { padding: 0 16px; }
+    .nav-links { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 4px; }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a { flex: 0 0 auto; white-space: nowrap; font-size: 12.5px; padding: 6px 10px; }
+  }
+</style>
+
+<script>
+(function(){
+  var cached = localStorage.getItem('np_auth');
+  var style = document.createElement('style');
+  if (cached === 'signed-in') {
+    style.textContent = '#nav-signin-btn{display:none!important}#nav-profile-btn{display:flex!important}';
+  } else {
+    style.textContent = '#nav-profile-btn{display:none!important}#nav-signin-btn{display:flex!important}';
+  }
+  document.head.appendChild(style);
+})();
+</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="topnav">
+  <a class="nav-brand" href="dietplan.html">Nutri<span>Plan</span></a>
+  <div class="nav-right" style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;justify-content:flex-end;">
+    <div class="nav-links">
+      <a href="dietplan.html">Dietplan</a>
+      <a href="education.html" class="active">Education</a>
+      <a href="comments.html">Comments</a>
+      <a href="messages.html" id="nav-msg-link" style="position:relative;">Messages<span id="nav-msg-dot" style="display:none;position:absolute;top:4px;right:6px;width:8px;height:8px;border-radius:50%;background:#dc2626;border:2px solid #fff;"></span></a>
+    </div>
+    <a href="profile.html" class="nav-signin-btn" id="nav-signin-btn">Sign In</a>
+    <div style="position:relative;flex-shrink:0;z-index:101;" id="nav-profile-wrap">
+      <button class="nav-profile-btn" id="nav-profile-btn" onclick="window.location.href='profile.html'" title="My Profile"></button>
+    </div>
+  </div>
+</nav>
+
+<div class="edu-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">On this page</div>
+    <ul class="sidebar-nav">
+      <li><a href="#nutrition-overview" class="active">Nutrition Overview</a></li>
+      <li><a href="#nutrients">Nutrients</a></li>
+      <li><a href="#balance">Nutritional Balance</a></li>
+      <li><a href="#rda">RDA, AI, AMDR & UL</a></li>
+      <span class="sidebar-section-label">Macronutrients</span>
+      <li class="sub-item"><a href="#carbohydrates">Carbohydrates</a></li>
+      <li class="sub-item"><a href="#proteins">Proteins</a></li>
+      <li class="sub-item"><a href="#fats">Fats</a></li>
+      <span class="sidebar-section-label">Micronutrients</span>
+      <li class="sub-item"><a href="#vitamins">Vitamins</a></li>
+      <li class="sub-item"><a href="#minerals">Minerals</a></li>
+      <span class="sidebar-section-label">Lifestyle</span>
+      <li><a href="#water">Water Intake</a></li>
+      <li><a href="#sleep">Sleep</a></li>
+      <li><a href="#physical-activity">Physical Activity</a></li>
+      <li><a href="#body-metrics">Body Metrics</a></li>
+    </ul>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="edu-content">
+    <a href="index.html" class="back-btn">← Back to Diet Planner</a>
+
+    <!-- HERO -->
+    <div class="edu-hero" id="nutrition-overview">
+      <div class="badge">Education Hub</div>
+      <h1>Understanding <em>Nutrition</em><br/>& Your Body</h1>
+      <p>Learn the science behind what you eat — from macronutrients to micronutrients — and how they power every function in your body.</p>
+      <div class="edu-hero-img">🥦🍎🥜🐟🌾</div>
+    </div>
+
+    <!-- SECTION: Nutrition -->
+    <section class="edu-section" id="nutrition">
+      <h2>What is Nutrition?</h2>
+      <p>Nutrition is the process of consuming the right amount and combination of nutrients to keep your body functioning. Nutrients are chemical substances found in food. Good nutrition can reduce your risk of disease, support healing, and improve your mental health.</p>
+      <p>Food provides your body with the raw materials it needs to build cells, produce energy, regulate hormones, and carry out thousands of biochemical reactions every second. The quality and balance of your diet directly affects how you feel, think, and perform.</p>
+      <div class="info-box">
+        <p><strong>Key Insight:</strong> "You are what you eat" isn't just a saying — the nutrients in your food literally become the building blocks of your body's tissues, enzymes, and hormones.</p>
+      </div>
+    </section>
+
+    <!-- SECTION: Nutrients -->
+    <section class="edu-section" id="nutrients">
+      <h2>Nutrients</h2>
+      <p>Nutrients are chemical compounds in food that are used by the body to function properly and maintain health. They are broadly classified into two categories:</p>
+
+      <div class="nutrient-cards">
+        <a class="nutrient-card clickable" href="#carbohydrates">
+          <div class="n-icon">🌾</div>
+          <div class="n-name">Carbohydrates</div>
+          <div class="n-desc">Primary energy source for brain & body</div>
+        </a>
+        <a class="nutrient-card clickable" href="#proteins">
+          <div class="n-icon">🥩</div>
+          <div class="n-name">Proteins</div>
+          <div class="n-desc">Builds & repairs tissues, enzymes, hormones</div>
+        </a>
+        <a class="nutrient-card clickable" href="#fats">
+          <div class="n-icon">🥑</div>
+          <div class="n-name">Fats</div>
+          <div class="n-desc">Stored energy, hormone production</div>
+        </a>
+        <a class="nutrient-card clickable" href="#vitamins">
+          <div class="n-icon">🍊</div>
+          <div class="n-name">Vitamins</div>
+          <div class="n-desc">Regulate body processes, immunity</div>
+        </a>
+        <a class="nutrient-card clickable" href="#minerals">
+          <div class="n-icon">⚡</div>
+          <div class="n-name">Minerals</div>
+          <div class="n-desc">Bone strength, nerve function</div>
+        </a>
+        <a class="nutrient-card clickable" href="#water">
+          <div class="n-icon">💧</div>
+          <div class="n-name">Water</div>
+          <div class="n-desc">Hydration, digestion, temperature control</div>
+        </a>
+      </div>
+
+      <h3>Macronutrients</h3>
+      <p>Carbohydrates, Proteins, and Fats are macronutrients — they provide energy and support body structure. As the main nutrients found in food, macronutrients maintain your body's structure and functioning. They are needed in relatively large amounts daily.</p>
+
+      <h3>Micronutrients</h3>
+      <p>Vitamins and Minerals are micronutrients — they help regulate body processes, support immunity, and enable chemical reactions. You need fewer micronutrients than macronutrients, but they are still critically important.</p>
+    </section>
+
+    <!-- SECTION: Balance -->
+    <section class="edu-section" id="balance">
+      <h2>Nutritional Balance & Requirements</h2>
+      <p>To stay healthy, our body needs a proper balance of all nutrients. No single food or nutrient is enough on its own — a healthy diet comes from combining carbohydrates, proteins, fats, vitamins, minerals, and water in the right proportions.</p>
+      <p>When nutrients are balanced, the body gets enough energy, grows properly, and functions efficiently. An imbalance, whether too little or too much, can lead to weakness, health issues, or disease.</p>
+      <div class="info-box">
+        <p><strong>Remember:</strong> Eating healthy is about the right combination and quantities, not just eating "clean foods." Even nutritious foods can cause problems when consumed in wrong proportions.</p>
+      </div>
+    </section>
+
+    <!-- SECTION: RDA -->
+    <section class="edu-section" id="rda">
+      <h2>RDA, AI, AMDR & UL</h2>
+      <p>Nutrition guidelines provide clear recommendations on how much of each nutrient we should consume. Here are the key reference values:</p>
+      <div class="def-grid">
+        <div class="def-card">
+          <div class="def-title">RDA — Recommended Dietary Allowance</div>
+          <p>The average daily amount of a nutrient needed to meet the requirements of most healthy people (covering ~97–98% of the population).</p>
+        </div>
+        <div class="def-card">
+          <div class="def-title">AI — Adequate Intake</div>
+          <p>A recommended intake level used when there is not enough evidence to set an RDA. Assumed to be sufficient for health based on observed intakes.</p>
+        </div>
+        <div class="def-card">
+          <div class="def-title">AMDR — Acceptable Macronutrient Distribution Range</div>
+          <p>The recommended range of carbohydrates, proteins, and fats as a percentage of total daily calories for good health.</p>
+        </div>
+        <div class="def-card">
+          <div class="def-title">UL — Upper Limit (Tolerable Upper Intake Level)</div>
+          <p>The maximum amount of a nutrient that can be consumed daily without causing harmful effects. Exceeding the UL increases the risk of adverse health effects.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- MACRONUTRIENTS -->
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <!-- SECTION: CARBOHYDRATES -->
+    <section class="edu-section" id="carbohydrates">
+      <h2>Carbohydrates</h2>
+      <div class="carb-visual">
+        <div class="carb-img-box">🌾🍞🍚</div>
+        <div class="carb-text">
+          <p>Carbohydrates, or carbs, are sugar molecules. Along with proteins and fats, they are one of three main nutrients found in foods and drinks. Your body breaks down carbohydrates into glucose — the main source of energy for your cells, tissues, and organs.</p>
+          <p>Glucose can be used immediately or stored in the liver and muscles for later use. Eating the right amount of healthy carbohydrates is important for maintaining energy levels and overall health.</p>
+        </div>
+      </div>
+
+      <h3>Types of Carbohydrates</h3>
+      <div class="type-cards">
+        <div class="type-card">
+          <div class="ct-label">Sugars (Simple Carbs)</div>
+          <p>Basic form of carbs found in fruits, milk, sweets, and soft drinks. They digest quickly and provide fast energy.</p>
+        </div>
+        <div class="type-card">
+          <div class="ct-label">Starches (Complex Carbs)</div>
+          <p>Made of many sugar units. Found in bread, cereal, pasta, potatoes, peas, and corn. Digested slowly for steady energy.</p>
+        </div>
+        <div class="type-card">
+          <div class="ct-label">Fiber (Complex Carb)</div>
+          <p>Not fully digested. Helps you feel full, prevents constipation, and may lower cholesterol and blood sugar. Found in plants, whole grains, nuts, seeds.</p>
+        </div>
+      </div>
+
+      <h3>Food Sources</h3>
+      <ul>
+        <li>Grains: bread, noodles, pasta, crackers, cereals, and rice</li>
+        <li>Fruits: apples, bananas, berries, mangoes, melons, and oranges</li>
+        <li>Dairy: milk and yogurt</li>
+        <li>Legumes: dried beans, lentils, and peas</li>
+        <li>Starchy vegetables: potatoes, corn, and peas</li>
+      </ul>
+
+      <h3>Energy from Carbohydrates</h3>
+      <p>Carbohydrates provide <strong>4 kcal per gram</strong> of energy — the same as protein, making them an efficient fuel source for the brain and muscles.</p>
+      <div class="req-highlight">
+        <div class="req-item"><div class="req-val">100–130g</div><div class="req-lbl">Minimum daily intake (brain function)</div></div>
+        <div class="req-item"><div class="req-val">45–65%</div><div class="req-lbl">Of total daily calories (AMDR)</div></div>
+        <div class="req-item"><div class="req-val">4 kcal/g</div><div class="req-lbl">Energy provided per gram</div></div>
+      </div>
+      <div class="info-box">
+        <p><strong>Requirement per Day:</strong> Adults should consume at least <strong>100–130 grams</strong> of carbohydrates per day. According to AMDR guidelines, carbohydrates should make up about <strong>45–65% of total daily calories</strong>.</p>
+      </div>
+    </section>
+
+    <!-- SECTION: PROTEINS -->
+    <section class="edu-section" id="proteins">
+      <h2>Proteins</h2>
+      <div class="carb-visual">
+        <div class="carb-img-box" style="background:linear-gradient(135deg,#fef3e6 0%,#fde0c0 100%);">🥚🥩🐟</div>
+        <div class="carb-text">
+          <p>Proteins are the building blocks of life. Every cell in the human body contains protein. The basic structure of protein is a chain of amino acids. You need protein in your diet to help your body repair cells and make new ones.</p>
+          <p>Protein is also important for growth and development in children, teens, and pregnant women. The protein in food is broken down into amino acids during digestion — used to rebuild cells, produce hormones, and support immune function.</p>
+        </div>
+      </div>
+
+      <h3>Amino Acids</h3>
+      <div class="type-cards">
+        <div class="type-card">
+          <div class="ct-label">Essential Amino Acids</div>
+          <p>Cannot be made by the body — must come from food. Found in animal sources like meat, milk, fish, and eggs, and plant sources like soy and quinoa.</p>
+        </div>
+        <div class="type-card">
+          <div class="ct-label">Nonessential Amino Acids</div>
+          <p>Made by the body from essential amino acids or during normal protein breakdown. Don't need to be eaten daily.</p>
+        </div>
+        <div class="type-card">
+          <div class="ct-label">Conditional Amino Acids</div>
+          <p>Usually nonessential, but become essential during times of illness and stress when the body cannot produce enough.</p>
+        </div>
+      </div>
+
+      <h3>Types of Protein</h3>
+      <div class="def-grid">
+        <div class="def-card">
+          <div class="def-title">Complete Proteins</div>
+          <p>Contain all 9 essential amino acids. Found in eggs, meat, fish, dairy, and soy. Best for muscle building and repair.</p>
+        </div>
+        <div class="def-card">
+          <div class="def-title">Incomplete Proteins</div>
+          <p>Lack one or more essential amino acids. Found in lentils, beans, nuts, and grains. Combine multiple sources for completeness.</p>
+        </div>
+      </div>
+
+      <h3>Food Sources</h3>
+      <ul>
+        <li>Low-fat dairy, turkey, chicken (skin removed), bison</li>
+        <li>Lean cuts of beef or pork (round, top sirloin, tenderloin)</li>
+        <li>Fish or shellfish</li>
+        <li>Pinto, black, kidney beans, lentils, split peas, chickpeas</li>
+        <li>Nuts and seeds: almonds, peanuts, sunflower seeds, walnuts</li>
+        <li>Tofu, tempeh, and other soy protein products</li>
+        <li>Whole grains (contain more protein than refined products)</li>
+      </ul>
+
+      <h3>Energy from Proteins</h3>
+      <p>Proteins provide <strong>4 kcal per gram</strong> — equal to carbohydrates. However, protein's primary role is structural, not fuel. The body uses protein for energy only when carbohydrate and fat stores are insufficient.</p>
+      <div class="req-highlight">
+        <div class="req-item"><div class="req-val">0.8–1g</div><div class="req-lbl">Per kg body weight (sedentary adults)</div></div>
+        <div class="req-item"><div class="req-val">10–35%</div><div class="req-lbl">Of total daily calories (AMDR)</div></div>
+        <div class="req-item"><div class="req-val">4 kcal/g</div><div class="req-lbl">Energy provided per gram</div></div>
+      </div>
+      <div class="info-box">
+        <p><strong>Requirement per Day:</strong> Sedentary adults need about <strong>0.8g per kg</strong> of body weight. Active individuals or athletes need <strong>1.2–2.0g per kg</strong>. Protein should make up <strong>10–35% of total daily calories</strong>.</p>
+      </div>
+    </section>
+
+    <!-- SECTION: FATS -->
+    <section class="edu-section" id="fats">
+      <h2>Fats</h2>
+      <div class="carb-visual">
+        <div class="carb-img-box" style="background:linear-gradient(135deg,#f0fde8 0%,#d4f5c0 100%);"></div>
+        <div class="carb-text">
+          <p>Fat is a type of nutrient — you need some fat in your diet but not too much. Fats give you energy and help your body absorb fat-soluble vitamins (A, D, E, K). Dietary fat also plays a major role in your cholesterol levels.</p>
+          <p>Not all fats are the same. Healthy unsaturated fats support heart health, while trans fats found in processed foods should be strictly avoided.</p>
+        </div>
+      </div>
+
+      <h3>Types of Fats</h3>
+      <div class="type-cards">
+        <div class="type-card">
+          <div class="ct-label">Unsaturated Fats (Healthy)</div>
+          <p>Found in avocados, olive oil, canola oil, nuts, seeds, and fatty fish. Support heart health and reduce bad cholesterol. Should make up most of your fat intake.</p>
+        </div>
+        <div class="type-card">
+          <div class="ct-label">Saturated Fats (Limit)</div>
+          <p>Found in butter, solid shortening, lard, red meat, and full-fat dairy. Raise LDL cholesterol when consumed in excess. Limit to less than 10% of total daily calories.</p>
+        </div>
+        <div class="type-card">
+          <div class="ct-label">Trans Fats (Avoid)</div>
+          <p>Found in vegetable shortenings, some margarines, crackers, cookies, snack foods, and foods fried in partially hydrogenated oils. Raise LDL and lower HDL cholesterol.</p>
+        </div>
+      </div>
+
+      <h3>Energy from Fats</h3>
+      <p>Fats provide <strong>9 kcal per gram</strong> — more than double that of carbohydrates or protein, making them the most energy-dense macronutrient. They serve as the body's primary long-term energy storage.</p>
+      <div class="req-highlight">
+        <div class="req-item"><div class="req-val">44–77g</div><div class="req-lbl">Estimated daily fat (2000 kcal diet)</div></div>
+        <div class="req-item"><div class="req-val">20–35%</div><div class="req-lbl">Of total daily calories (AMDR)</div></div>
+        <div class="req-item"><div class="req-val">9 kcal/g</div><div class="req-lbl">Energy provided per gram</div></div>
+      </div>
+      <div class="info-box">
+        <p><strong>Requirement per Day:</strong> Dietary fats should make up <strong>20–35% of total daily calories</strong>. On a 2000 kcal diet, this means roughly <strong>44–77 grams of fat per day</strong>. Prioritise unsaturated sources and keep saturated fats below 10%.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- MICRONUTRIENTS -->
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <!-- SECTION: VITAMINS -->
+    <section class="edu-section" id="vitamins">
+      <h2>Vitamins</h2>
+      <p>Vitamins are substances that your body needs to grow and develop normally. There are 13 vitamins your body needs. They are divided into two types: <strong>fat-soluble</strong> (A, D, E, K — stored in body fat and liver) and <strong>water-soluble</strong> (C and B vitamins — not stored, needed regularly).</p>
+
+      <div class="section-part-label"><span>Fat-Soluble Vitamins</span></div>
+
+      <div class="vitamin-accordion">
+
+        <!-- Vitamin A -->
+        <div class="vit-item" id="vit-a">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🥕</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin A</div>
+              <div class="vit-tagline">Vision · Bone · Immune system · Cell functions</div>
+            </div>
+            <span class="vit-badge">Fat-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card">
+                <div class="vic-label">Benefits</div>
+                <ul><li>Vision and eye health</li><li>Bone development</li><li>Reproduction</li><li>Cell functions</li><li>Immune system support</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Deficiency Symptoms</div>
+                <ul><li>Vision loss / blindness</li><li>Dry, scaly skin</li><li>Infertility</li><li>Delayed growth in children</li><li>Respiratory infections</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Food Sources</div>
+                <ul><li>Beef liver, fish (herring, salmon)</li><li>Eggs, dairy, fortified cereals</li><li>Carrots, sweet potatoes, mango</li><li>Spinach and dark leafy greens</li></ul>
+              </div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mcg)</th><th>Upper Limit (mcg)</th></tr></thead>
+                <tbody>
+                  <tr class="group-header"><td colspan="3">Infants</td></tr>
+                  <tr><td>0–6 months</td><td>350</td><td>600</td></tr>
+                  <tr><td>6–12 months</td><td>350</td><td>600</td></tr>
+                  <tr class="group-header"><td colspan="3">Children</td></tr>
+                  <tr><td>1–3 years</td><td>390</td><td>900</td></tr>
+                  <tr><td>4–6 years</td><td>510</td><td>1700</td></tr>
+                  <tr><td>7–9 years</td><td>630</td><td>1700</td></tr>
+                  <tr class="group-header"><td colspan="3">Adolescents</td></tr>
+                  <tr><td>Boys 10–12y</td><td>770</td><td>2800</td></tr>
+                  <tr><td>Girls 10–12y</td><td>790</td><td>2800</td></tr>
+                  <tr><td>Boys 13–15y</td><td>930</td><td>2800</td></tr>
+                  <tr><td>Girls 13–15y</td><td>890</td><td>2800</td></tr>
+                  <tr><td>Boys 16–18y</td><td>1000</td><td>2800</td></tr>
+                  <tr><td>Girls 16–18y</td><td>860</td><td>2800</td></tr>
+                  <tr class="group-header"><td colspan="3">Adults</td></tr>
+                  <tr><td>Men 19–59y</td><td>1000</td><td>3000</td></tr>
+                  <tr><td>Women 19–59y</td><td>840</td><td>3000</td></tr>
+                  <tr><td>Pregnant women</td><td>900</td><td>3000</td></tr>
+                  <tr><td>Lactation 0–6m</td><td>950</td><td>3000</td></tr>
+                  <tr><td>Lactation 7–12m</td><td>950</td><td>3000</td></tr>
+                  <tr><td>Men ≥60y</td><td>1000</td><td>3000</td></tr>
+                  <tr><td>Women ≥60y</td><td>840</td><td>3000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vitamin D -->
+        <div class="vit-item" id="vit-d">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">☀️</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin D</div>
+              <div class="vit-tagline">Calcium absorption · Bone health · Immune defense</div>
+            </div>
+            <span class="vit-badge">Fat-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card">
+                <div class="vic-label">Benefits</div>
+                <ul><li>Helps absorb calcium</li><li>Muscle movement</li><li>Nerve signal transmission</li><li>Immune defense against bacteria & viruses</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Deficiency Symptoms</div>
+                <ul><li>Bone density loss</li><li>Osteoporosis & fractures</li><li>Rickets in children</li><li>Osteomalacia in adults (weak bones)</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Food Sources</div>
+                <ul><li>Sunlight (skin synthesis)</li><li>Fatty fish: tuna, salmon, mackerel</li><li>Beef liver, cheese, egg yolks</li><li>Fortified milk and mushrooms</li></ul>
+              </div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (IU)</th><th>Upper Limit (IU)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>400</td><td>1000</td></tr>
+                  <tr><td>Infants 6–12m</td><td>400</td><td>1500</td></tr>
+                  <tr><td>Children 1–3y</td><td>600</td><td>2500</td></tr>
+                  <tr><td>Children 4–6y</td><td>600</td><td>3000</td></tr>
+                  <tr><td>Children 7–9y</td><td>600</td><td>3000</td></tr>
+                  <tr><td>Boys/Girls 10–18y</td><td>600</td><td>4000</td></tr>
+                  <tr><td>Men/Women 19–59y</td><td>600</td><td>4000</td></tr>
+                  <tr><td>Pregnant / Lactating</td><td>600</td><td>4000</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>600</td><td>4000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vitamin E -->
+        <div class="vit-item" id="vit-e">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🌻</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin E</div>
+              <div class="vit-tagline">Antioxidant · Immune system · Red blood cell formation</div>
+            </div>
+            <span class="vit-badge">Fat-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card">
+                <div class="vic-label">Benefits</div>
+                <ul><li>Antioxidant — protects cells from damage</li><li>Strengthens immune system</li><li>Helps form red blood cells</li><li>Aids in vitamin K utilization</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Deficiency Symptoms</div>
+                <ul><li>Muscle weakness</li><li>Vision issues</li><li>Numbness and fatigue</li><li>Weakened immune system</li><li>Trouble walking</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Food Sources</div>
+                <ul><li>Vegetable oils (wheat germ, sunflower, safflower)</li><li>Nuts: almonds, peanuts, hazelnuts</li><li>Sunflower seeds</li><li>Spinach, broccoli</li></ul>
+              </div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th><th>Upper Limit (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>4</td><td>200</td></tr>
+                  <tr><td>Infants 6–12m</td><td>5</td><td>200</td></tr>
+                  <tr><td>Children 1–3y</td><td>6</td><td>200</td></tr>
+                  <tr><td>Children 4–6y</td><td>7</td><td>300</td></tr>
+                  <tr><td>Children 7–9y</td><td>11</td><td>300</td></tr>
+                  <tr><td>Boys/Girls 10–12y</td><td>11</td><td>600</td></tr>
+                  <tr><td>Boys/Girls 13–18y</td><td>15</td><td>800</td></tr>
+                  <tr><td>Men/Women 19–59y</td><td>15</td><td>1000</td></tr>
+                  <tr><td>Pregnant women</td><td>15</td><td>1000</td></tr>
+                  <tr><td>Lactating women</td><td>19</td><td>1000</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>15</td><td>1000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vitamin K -->
+        <div class="vit-item" id="vit-k">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🥬</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin K</div>
+              <div class="vit-tagline">Blood clotting · Bone health · Tissue proteins</div>
+            </div>
+            <span class="vit-badge">Fat-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card">
+                <div class="vic-label">Benefits</div>
+                <ul><li>Makes proteins for healthy bones & tissues</li><li>Essential for blood clotting</li><li>Prevents excessive bleeding</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Deficiency Symptoms</div>
+                <ul><li>Uncontrolled bleeding</li><li>Bruises, nose bleeds</li><li>Jaundice, pale skin</li><li>Seizures (severe deficiency)</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Food Sources</div>
+                <ul><li>Kale, spinach, Swiss chard, parsley</li><li>Brussels sprouts, broccoli, cabbage</li><li>Fish, liver, meat, eggs</li></ul>
+              </div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mcg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>2</td></tr>
+                  <tr><td>Infants 6–12m</td><td>2.5</td></tr>
+                  <tr><td>Children 1–3y</td><td>30</td></tr>
+                  <tr><td>Children 4–6y</td><td>55</td></tr>
+                  <tr><td>Children 7–9y</td><td>60</td></tr>
+                  <tr><td>Boys 10–12y</td><td>60</td></tr>
+                  <tr><td>Girls 10–12y</td><td>60</td></tr>
+                  <tr><td>Boys 13–15y</td><td>75</td></tr>
+                  <tr><td>Girls 13–15y</td><td>65</td></tr>
+                  <tr><td>Boys 16–18y</td><td>75</td></tr>
+                  <tr><td>Girls 16–18y</td><td>65</td></tr>
+                  <tr><td>Men 19–59y</td><td>120</td></tr>
+                  <tr><td>Women 19–59y</td><td>90</td></tr>
+                  <tr><td>Pregnant women</td><td>90</td></tr>
+                  <tr><td>Lactating women</td><td>120</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>120 / 90</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div><!-- end fat-soluble -->
+
+      <div class="section-part-label"><span>Water-Soluble Vitamins</span></div>
+      <p style="color:var(--muted);font-size:13.5px;margin-bottom:16px;">Water-soluble vitamins aren't stored in the body — they enter your bloodstream, and anything unused is eliminated through urine. They must be consumed regularly.</p>
+
+      <div class="vitamin-accordion">
+
+        <!-- Vitamin C -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🍊</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin C</div>
+              <div class="vit-tagline">Immunity · Collagen · Wound healing · Iron absorption</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card">
+                <div class="vic-label">Benefits</div>
+                <ul><li>Forms collagen (skin, tendons, blood vessels)</li><li>Heals wounds and scar tissue</li><li>Repairs cartilage, bones, and teeth</li><li>Aids iron absorption</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Deficiency Symptoms</div>
+                <ul><li>Rough, bumpy skin</li><li>Easy bruising</li><li>Slowly healing wounds</li><li>Bleeding gums and tooth loss</li><li>Scurvy (severe deficiency)</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Food Sources</div>
+                <ul><li>Citrus fruits, kiwi, mango, pineapple</li><li>Strawberries, papaya, guava</li><li>Broccoli, red/green peppers</li><li>Spinach, sweet potato, tomatoes</li></ul>
+              </div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th><th>Upper Limit (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>20</td><td>—</td></tr>
+                  <tr><td>Infants 6–12m</td><td>30</td><td>—</td></tr>
+                  <tr><td>Children 1–3y</td><td>30</td><td>350</td></tr>
+                  <tr><td>Children 4–6y</td><td>35</td><td>550</td></tr>
+                  <tr><td>Children 7–9y</td><td>45</td><td>800</td></tr>
+                  <tr><td>Boys 10–12y</td><td>55</td><td>1050</td></tr>
+                  <tr><td>Girls 10–12y</td><td>50</td><td>1300</td></tr>
+                  <tr><td>Boys 13–15y</td><td>70</td><td>1550</td></tr>
+                  <tr><td>Girls 13–15y</td><td>65</td><td>1800</td></tr>
+                  <tr><td>Boys 16–18y</td><td>85</td><td>1950</td></tr>
+                  <tr><td>Girls 16–18y</td><td>70</td><td>2000</td></tr>
+                  <tr><td>Men 19–59y</td><td>80</td><td>2000</td></tr>
+                  <tr><td>Women 19–59y</td><td>65</td><td>2000</td></tr>
+                  <tr><td>Pregnant women</td><td>80</td><td>2000</td></tr>
+                  <tr><td>Lactating women</td><td>115</td><td>2000</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>80 / 65</td><td>2000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- B1 -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🌾</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin B1 — Thiamine</div>
+              <div class="vit-tagline">Energy metabolism · Nerve signals · Muscle contraction</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card">
+                <div class="vic-label">Benefits</div>
+                <ul><li>Converts carbohydrates into energy</li><li>Supports brain and nervous system</li><li>Muscle contraction and nerve signals</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Deficiency</div>
+                <ul><li>Loss of weight and appetite</li><li>Confusion, memory loss</li><li>Muscle weakness, heart problems</li><li>Beriberi (severe deficiency)</li></ul>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Food Sources</div>
+                <ul><li>Whole grains, fortified cereals</li><li>Beef steak, pork, trout, tuna</li><li>Legumes, nuts, seeds, eggs</li></ul>
+              </div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>0.2</td></tr>
+                  <tr><td>Infants 6–12m</td><td>0.4</td></tr>
+                  <tr><td>Children 1–3y</td><td>0.7</td></tr>
+                  <tr><td>Children 4–6y</td><td>0.9</td></tr>
+                  <tr><td>Children 7–9y</td><td>1.1</td></tr>
+                  <tr><td>Boys 10–12y</td><td>1.5</td></tr>
+                  <tr><td>Girls 10–12y</td><td>1.4</td></tr>
+                  <tr><td>Boys 13–15y</td><td>1.9</td></tr>
+                  <tr><td>Girls 13–15y</td><td>1.6</td></tr>
+                  <tr><td>Boys 16–18y</td><td>2.2</td></tr>
+                  <tr><td>Girls 16–18y</td><td>1.7</td></tr>
+                  <tr><td>Men 19–59y</td><td>1.8</td></tr>
+                  <tr><td>Women 19–59y</td><td>1.7</td></tr>
+                  <tr><td>Pregnant women</td><td>2.0</td></tr>
+                  <tr><td>Lactating women</td><td>2.1</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>1.4</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- B2 -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🥛</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin B2 — Riboflavin</div>
+              <div class="vit-tagline">Body growth · Red blood cells · Energy release</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Important for body growth</li><li>Red blood cell production</li><li>Releases energy from carbs, proteins, fats</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Skin disorders, hair loss</li><li>Sores at corners of mouth</li><li>Sore throat, liver disorders</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Dairy products, eggs, milk</li><li>Green leafy vegetables</li><li>Lean meats, organ meats, nuts</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>0.4</td></tr><tr><td>Infants 6–12m</td><td>0.6</td></tr>
+                  <tr><td>Children 1–3y</td><td>1.1</td></tr><tr><td>Children 4–6y</td><td>1.3</td></tr><tr><td>Children 7–9y</td><td>1.6</td></tr>
+                  <tr><td>Boys 10–12y</td><td>2.1</td></tr><tr><td>Girls 10–12y</td><td>1.9</td></tr>
+                  <tr><td>Boys 13–15y</td><td>2.7</td></tr><tr><td>Girls 13–15y</td><td>2.2</td></tr>
+                  <tr><td>Boys 16–18y</td><td>3.1</td></tr><tr><td>Girls 16–18y</td><td>2.3</td></tr>
+                  <tr><td>Men 19–59y</td><td>2.5</td></tr><tr><td>Women 19–59y</td><td>2.4</td></tr>
+                  <tr><td>Pregnant women</td><td>2.7</td></tr><tr><td>Lactating women</td><td>3.0</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>2.0 / 1.9</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- B3 -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🥜</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin B3 — Niacin</div>
+              <div class="vit-tagline">Digestive system · Skin health · Energy from food</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Supports digestive system</li><li>Skin and nerve function</li><li>Converts food to energy</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Pellagra (severe deficiency)</li><li>Skin disorders</li><li>Digestive problems</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Milk, eggs, fish, lean meats</li><li>Enriched breads, rice, cereals</li><li>Legumes, peanuts, poultry</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th><th>Upper Limit (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>2</td><td>—</td></tr><tr><td>Infants 6–12m</td><td>5</td><td>—</td></tr>
+                  <tr><td>Children 1–3y</td><td>7</td><td>10</td></tr><tr><td>Children 4–6y</td><td>9</td><td>15</td></tr><tr><td>Children 7–9y</td><td>11</td><td>20</td></tr>
+                  <tr><td>Boys 10–12y</td><td>15</td><td>20</td></tr><tr><td>Girls 10–12y</td><td>14</td><td>20</td></tr>
+                  <tr><td>Boys 13–15y</td><td>19</td><td>30</td></tr><tr><td>Girls 13–15y</td><td>16</td><td>30</td></tr>
+                  <tr><td>Boys 16–18y</td><td>22</td><td>30</td></tr><tr><td>Girls 16–18y</td><td>17</td><td>30</td></tr>
+                  <tr><td>Men 19–59y</td><td>18</td><td>35</td></tr><tr><td>Women 19–59y</td><td>14</td><td>35</td></tr>
+                  <tr><td>Pregnant / Lactating</td><td>13 / 16</td><td>35</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>14 / 11</td><td>35</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- B5 -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🥚</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin B5 — Pantothenic Acid</div>
+              <div class="vit-tagline">Metabolism · Hormone production · Growth</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Needed for growth</li><li>Helps body break down and use food (metabolism)</li><li>Hormone and cholesterol production</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Numbness/burning in hands & feet</li><li>Headache, fatigue, irritability</li><li>Stomach pain, nausea, diarrhea</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Avocado, broccoli, kale</li><li>Eggs, milk, mushrooms</li><li>Organ meats, poultry, potatoes</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–12m</td><td>2</td></tr>
+                  <tr><td>Children 1–6y</td><td>2–3</td></tr>
+                  <tr><td>Children 7–9y</td><td>4</td></tr>
+                  <tr><td>Adolescents 10–18y</td><td>5</td></tr>
+                  <tr><td>Adults 19–59y</td><td>5</td></tr>
+                  <tr><td>Pregnant women</td><td>5</td></tr>
+                  <tr><td>Lactating women</td><td>7</td></tr>
+                  <tr><td>Adults ≥60y</td><td>5</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- B6 -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🐟</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin B6</div>
+              <div class="vit-tagline">Immunity · Hemoglobin · Blood sugar regulation</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Makes antibodies to fight infections</li><li>Maintains normal nerve function</li><li>Makes hemoglobin (carries oxygen)</li><li>Keeps blood sugar in normal ranges</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Anemia, itchy rashes</li><li>Scaly skin on lips, cracked mouth corners</li><li>Depression, confusion</li><li>Weak immune system</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Tuna, salmon, banana</li><li>Beef, pork, poultry, nuts</li><li>Legumes, whole grains, chickpeas</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th><th>Upper Limit (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>0.1</td><td>—</td></tr><tr><td>Infants 6–12m</td><td>0.6</td><td>—</td></tr>
+                  <tr><td>Children 1–3y</td><td>0.9</td><td>30</td></tr><tr><td>Children 4–6y</td><td>1.2</td><td>40</td></tr><tr><td>Children 7–9y</td><td>1.5</td><td>60</td></tr>
+                  <tr><td>Boys 10–12y</td><td>2.0</td><td>60</td></tr><tr><td>Girls 10–12y</td><td>1.9</td><td>60</td></tr>
+                  <tr><td>Boys 13–15y</td><td>2.6</td><td>80</td></tr><tr><td>Girls 13–15y</td><td>2.2</td><td>80</td></tr>
+                  <tr><td>Boys 16–18y</td><td>3.0</td><td>80</td></tr><tr><td>Girls 16–18y</td><td>2.3</td><td>80</td></tr>
+                  <tr><td>Men 19–59y</td><td>2.4</td><td>100</td></tr><tr><td>Women 19–59y</td><td>1.9</td><td>100</td></tr>
+                  <tr><td>Pregnant women</td><td>2.3</td><td>100</td></tr><tr><td>Lactating women</td><td>2.1</td><td>100</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>1.9</td><td>100</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- B7 -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">💅</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin B7 — Biotin</div>
+              <div class="vit-tagline">Hair · Nails · Skin · Nerve health · Prenatal care</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Supports hair, skin, and nail health</li><li>Diabetes management</li><li>Nerve health and prenatal care</li><li>Helps enzymes carry out their jobs</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Thinning hair and hair loss</li><li>Rash around eyes, nose, mouth</li><li>Brittle nails, seizures</li><li>Nervous system disorders</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Egg yolk, milk, nuts</li><li>Organ meats (liver, kidney)</li><li>Legumes, pork, yeast, chocolate</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mcg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>4</td></tr><tr><td>Infants 6–12m</td><td>5</td></tr>
+                  <tr><td>Children 1–3y</td><td>7</td></tr><tr><td>Children 4–6y</td><td>9</td></tr><tr><td>Children 7–9y</td><td>12</td></tr>
+                  <tr><td>Boys 10–12y</td><td>15</td></tr><tr><td>Girls 10–12y</td><td>16</td></tr>
+                  <tr><td>Adolescents 13–18y</td><td>20–25</td></tr>
+                  <tr><td>Adults 19–59y</td><td>25</td></tr>
+                  <tr><td>Pregnant women</td><td>25</td></tr><tr><td>Lactating women</td><td>30</td></tr>
+                  <tr><td>Adults ≥60y</td><td>25</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- B9 -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🥦</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin B9 — Folate (Folic Acid)</div>
+              <div class="vit-tagline">Cell growth · DNA · Red blood cells · Pregnancy</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Helps tissues grow and cells work</li><li>Forms red blood cells (prevents anemia)</li><li>Produces DNA — the building block of life</li><li>Works with B12 and C to break down proteins</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Megaloblastic anemia</li><li>Weakness, fatigue, headache</li><li>Heart palpitations, shortness of breath</li><li>Changes in skin, hair, or nail color</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Dark green leafy vegetables</li><li>Dried beans and peas (legumes)</li><li>Citrus fruits and juices</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mcg)</th><th>Upper Limit (mcg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>25</td><td>—</td></tr><tr><td>Infants 6–12m</td><td>85</td><td>—</td></tr>
+                  <tr><td>Children 1–3y</td><td>1230</td><td>300</td></tr><tr><td>Children 4–6y</td><td>1135</td><td>400</td></tr><tr><td>Children 7–9y</td><td>170</td><td>600</td></tr>
+                  <tr><td>Boys 10–12y</td><td>220</td><td>600</td></tr><tr><td>Girls 10–12y</td><td>225</td><td>600</td></tr>
+                  <tr><td>Boys 13–15y</td><td>285</td><td>800</td></tr><tr><td>Girls 13–15y</td><td>245</td><td>800</td></tr>
+                  <tr><td>Boys 16–18y</td><td>340</td><td>800</td></tr><tr><td>Girls 16–18y</td><td>270</td><td>800</td></tr>
+                  <tr><td>Men 19–59y</td><td>300</td><td>1000</td></tr><tr><td>Women 19–59y</td><td>220</td><td>1000</td></tr>
+                  <tr><td>Pregnant women</td><td>570</td><td>1000</td></tr><tr><td>Lactating women</td><td>330</td><td>1000</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>300 / 200</td><td>1000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- B12 -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🥩</div>
+            <div class="vit-header-text">
+              <div class="vit-name">Vitamin B12</div>
+              <div class="vit-tagline">Protein metabolism · Nervous system · Red blood cells</div>
+            </div>
+            <span class="vit-badge">Water-Soluble</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Important for protein metabolism</li><li>Forms red blood cells</li><li>Maintains nervous system</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Fatigue, weakness, megaloblastic anemia</li><li>Numbness/tingling in hands and feet</li><li>Depression, confusion, poor memory</li><li>Pale skin, heart palpitations</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Beef liver, shellfish (clams)</li><li>Meat, poultry, eggs, dairy</li><li>Fortified breakfast cereals</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mcg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–12m</td><td>1.2</td></tr>
+                  <tr><td>Children 1–9y</td><td>1.2–2.2</td></tr>
+                  <tr><td>Adolescents 10–18y</td><td>2.2</td></tr>
+                  <tr><td>Adults 19–59y</td><td>2.2</td></tr>
+                  <tr><td>Pregnant women</td><td>2.45</td></tr>
+                  <tr><td>Lactating women</td><td>3.2</td></tr>
+                  <tr><td>Adults ≥60y</td><td>2.2</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end water-soluble -->
+    </section>
+
+    <!-- SECTION: MINERALS -->
+    <section class="edu-section" id="minerals">
+      <h2>Minerals</h2>
+      <p>Minerals are essential for your body to stay healthy. Your body uses minerals for keeping your bones, muscles, heart, and brain working properly. They are also important for making enzymes and hormones. There are two kinds: <strong>macro minerals</strong> (needed in larger amounts) and <strong>trace minerals</strong> (needed in small amounts).</p>
+
+      <div class="section-part-label"><span>Macro Minerals</span></div>
+
+      <div class="vitamin-accordion">
+
+        <!-- Calcium -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🦷</div>
+            <div class="vit-header-text"><div class="vit-name">Calcium</div><div class="vit-tagline">Bones · Teeth · Muscle contraction · Heartbeat</div></div>
+            <span class="vit-badge">Macro Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Building strong bones and teeth</li><li>Clotting blood</li><li>Sending and receiving nerve signals</li><li>Releasing hormones and chemicals</li><li>Keeping a normal heartbeat</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Muscle cramps, spasms</li><li>Tingling in lips, tongue, fingers, feet</li><li>Irregular heartbeat</li><li>Seizures (extremely low levels)</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Yogurt, cheese, milk</li><li>Broccoli, kale, bok choy</li><li>Salmon and sardines (with bones)</li><li>Almonds, Brazil nuts, tofu, ragi</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th><th>Upper Limit (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–12m</td><td>300</td><td>—</td></tr>
+                  <tr><td>Children 1–3y</td><td>500</td><td>1500</td></tr><tr><td>Children 4–6y</td><td>550</td><td>2500</td></tr><tr><td>Children 7–9y</td><td>650</td><td>2500</td></tr>
+                  <tr><td>Boys/Girls 10–12y</td><td>850</td><td>3000</td></tr>
+                  <tr><td>Boys/Girls 13–15y</td><td>1000</td><td>3000</td></tr>
+                  <tr><td>Boys/Girls 16–18y</td><td>1050</td><td>3000</td></tr>
+                  <tr><td>Men/Women 19–59y</td><td>1000</td><td>2500</td></tr>
+                  <tr><td>Pregnant women</td><td>1000</td><td>2500</td></tr>
+                  <tr><td>Lactating women</td><td>1200</td><td>2500</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>1200</td><td>2500</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phosphorus -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🦴</div>
+            <div class="vit-header-text"><div class="vit-name">Phosphorus</div><div class="vit-tagline">Bones & teeth · Energy (ATP) · Kidney function</div></div>
+            <span class="vit-badge">Macro Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Formation of bones and teeth</li><li>Uses carbohydrates and fats for energy</li><li>Helps make ATP (energy molecule)</li><li>Kidney function, muscle contractions, nerve signaling</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Bone pain and fragile bones</li><li>Anxiety, fatigue</li><li>Irregular breathing, irritability</li><li>Joint stiffness, weakness</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Meat, milk, processed foods with sodium phosphate</li><li>Whole-grain breads and cereals</li><li>Fruits and vegetables (small amounts)</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th><th>Upper Limit (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–12m</td><td>200</td><td>—</td></tr>
+                  <tr><td>Children 1–3y</td><td>300</td><td>3000</td></tr><tr><td>Children 4–6y</td><td>350</td><td>3000</td></tr><tr><td>Children 7–9y</td><td>400</td><td>4000</td></tr>
+                  <tr><td>Adolescents 10–18y</td><td>500–600</td><td>4000</td></tr>
+                  <tr><td>Adults 19–59y</td><td>600</td><td>4000</td></tr>
+                  <tr><td>Pregnant women</td><td>600</td><td>3500</td></tr><tr><td>Lactating women</td><td>750</td><td>4000</td></tr>
+                  <tr><td>Adults ≥60y</td><td>600</td><td>4000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Magnesium -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🌰</div>
+            <div class="vit-header-text"><div class="vit-name">Magnesium</div><div class="vit-tagline">Muscle & nerve function · Blood sugar · Bone strength</div></div>
+            <span class="vit-badge">Macro Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Normal nerve and muscle function</li><li>Supports healthy immune system</li><li>Keeps heartbeat steady</li><li>Adjusts blood glucose levels</li><li>Aids energy and protein production</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Loss of appetite, nausea, vomiting</li><li>Fatigue and weakness</li><li>Muscle cramps</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Bananas, dried apricots, avocados</li><li>Almonds, cashews</li><li>Legumes, seeds, tofu</li><li>Brown rice, millet, milk</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>30</td></tr><tr><td>Infants 6–12m</td><td>75</td></tr>
+                  <tr><td>Children 1–3y</td><td>90</td></tr><tr><td>Children 4–6y</td><td>125</td></tr><tr><td>Children 7–9y</td><td>175</td></tr>
+                  <tr><td>Boys 10–12y</td><td>240</td></tr><tr><td>Girls 10–12y</td><td>250</td></tr>
+                  <tr><td>Boys 13–15y</td><td>345</td></tr><tr><td>Girls 13–15y</td><td>340</td></tr>
+                  <tr><td>Boys 16–18y</td><td>440</td></tr><tr><td>Girls 16–18y</td><td>380</td></tr>
+                  <tr><td>Men 19–59y</td><td>440</td></tr><tr><td>Women 19–59y</td><td>370</td></tr>
+                  <tr><td>Pregnant / Lactating</td><td>440 / 400</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>440 / 370</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Potassium -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🍌</div>
+            <div class="vit-header-text"><div class="vit-name">Potassium</div><div class="vit-tagline">Heart health · Blood pressure · Muscle function</div></div>
+            <span class="vit-badge">Macro Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Supports heart health</li><li>Proper muscle function</li><li>Maintains bone health</li><li>Controls acid-base balance</li><li>Breaks down carbohydrates</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Weakness, fatigue, muscle cramps</li><li>Digestive problems</li><li>Abnormal heartbeat</li><li>Tingling and numbness</li><li>High blood pressure</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Beans, lentils, potatoes, sweet potatoes</li><li>Bananas, citrus fruits, kiwi, prunes</li><li>Milk, yogurt, nuts</li><li>All meats, salmon, sardines</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>900</td></tr><tr><td>Infants 6–12m</td><td>1100</td></tr>
+                  <tr><td>Children 1–3y</td><td>1750</td></tr><tr><td>Children 4–6y</td><td>2250</td></tr><tr><td>Children 7–9y</td><td>2825</td></tr>
+                  <tr><td>Adolescents 10–18y</td><td>—</td></tr>
+                  <tr><td>Adults 19–59y</td><td>3500</td></tr>
+                  <tr><td>Adults ≥60y</td><td>3500</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sodium -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🧂</div>
+            <div class="vit-header-text"><div class="vit-name">Sodium</div><div class="vit-tagline">Blood pressure · Blood volume · Muscle & nerve function</div></div>
+            <span class="vit-badge">Macro Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Controls blood pressure and blood volume</li><li>Needed for muscle and nerve function</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency (Hyponatremia)</div><ul><li>Low blood sodium</li><li>Confusion, weakness</li><li>Severe cases can be life-threatening</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Table salt (sodium chloride)</li><li>Milk, beets, celery</li><li>Drinking water (amount varies by source)</li></ul></div>
+            </div>
+            <div class="warn-box"><p><strong>Note:</strong> While sodium is essential, most people consume too much. Limit to under 2000 mg/day to reduce risk of high blood pressure and heart disease.</p></div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>500</td></tr><tr><td>Infants 6–12m</td><td>650</td></tr>
+                  <tr><td>Children 1–3y</td><td>1000</td></tr><tr><td>Children 4–6y</td><td>1300</td></tr><tr><td>Children 7–9y</td><td>1600</td></tr>
+                  <tr><td>Adults 19–59y</td><td>2000</td></tr>
+                  <tr><td>Adults ≥60y</td><td>2000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end macro minerals -->
+
+      <div class="section-part-label"><span>Trace Minerals</span></div>
+      <p style="color:var(--muted);font-size:13.5px;margin-bottom:16px;">You only need small amounts of trace minerals, but they are essential for many bodily functions.</p>
+
+      <div class="vitamin-accordion">
+
+        <!-- Iron -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🩸</div>
+            <div class="vit-header-text"><div class="vit-name">Iron</div><div class="vit-tagline">Hemoglobin · Oxygen transport · Muscle health</div></div>
+            <span class="vit-badge">Trace Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Makes hemoglobin (carries oxygen)</li><li>Growth and development</li><li>Healthy muscles and bone marrow</li><li>Makes some hormones</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Iron-deficiency anemia</li><li>Fatigue, shortness of breath</li><li>Trouble with memory and concentration</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Dried beans, egg yolks, liver</li><li>Lean red meat (beef), oysters</li><li>Salmon, tuna, whole grains</li><li>Iron-fortified cereals</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th><th>Upper Limit (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>—</td><td>40</td></tr><tr><td>Infants 6–12m</td><td>6</td><td>40</td></tr>
+                  <tr><td>Children 1–3y</td><td>8</td><td>40</td></tr><tr><td>Children 4–6y</td><td>11</td><td>40</td></tr><tr><td>Children 7–9y</td><td>15</td><td>40</td></tr>
+                  <tr><td>Boys 10–12y</td><td>16</td><td>40</td></tr><tr><td>Girls 10–12y</td><td>28</td><td>40</td></tr>
+                  <tr><td>Boys 13–15y</td><td>22</td><td>45</td></tr><tr><td>Girls 13–15y</td><td>30</td><td>45</td></tr>
+                  <tr><td>Boys 16–18y</td><td>26</td><td>45</td></tr><tr><td>Girls 16–18y</td><td>32</td><td>45</td></tr>
+                  <tr><td>Men 19–59y</td><td>19</td><td>45</td></tr><tr><td>Women 19–59y</td><td>29</td><td>45</td></tr>
+                  <tr><td>Pregnant women</td><td>27</td><td>45</td></tr><tr><td>Lactating women</td><td>23</td><td>45</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>19</td><td>45</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zinc -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🦪</div>
+            <div class="vit-header-text"><div class="vit-name">Zinc</div><div class="vit-tagline">Immunity · Wound healing · Skin health · Cell growth</div></div>
+            <span class="vit-badge">Trace Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Skin health and cell growth</li><li>Immune function</li><li>Reduces inflammation and acne risk</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Unexplained weight loss</li><li>Wounds that won't heal</li><li>Loss of smell and taste</li><li>Diarrhea, loss of appetite</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Beef, pork, lamb, dark chicken meat</li><li>Nuts, whole grains, legumes</li><li>Pumpkin seeds, shellfish</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mg)</th><th>Upper Limit (mg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>—</td><td>4</td></tr><tr><td>Infants 6–12m</td><td>2.5</td><td>5</td></tr>
+                  <tr><td>Children 1–3y</td><td>3.3</td><td>7</td></tr><tr><td>Children 4–6y</td><td>4.5</td><td>12</td></tr><tr><td>Children 7–9y</td><td>5.9</td><td>12</td></tr>
+                  <tr><td>Boys/Girls 10–12y</td><td>8.5</td><td>23</td></tr>
+                  <tr><td>Boys 13–15y</td><td>14.3</td><td>34</td></tr><tr><td>Girls 13–15y</td><td>12.8</td><td>34</td></tr>
+                  <tr><td>Boys 16–18y</td><td>17.6</td><td>34</td></tr><tr><td>Girls 16–18y</td><td>14.2</td><td>34</td></tr>
+                  <tr><td>Men 19–59y</td><td>17.0</td><td>40</td></tr><tr><td>Women 19–59y</td><td>13.2</td><td>40</td></tr>
+                  <tr><td>Pregnant / Lactating</td><td>14.5 / 14.1</td><td>40</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>17.0 / 13.2</td><td>40</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Iodine -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🐟</div>
+            <div class="vit-header-text"><div class="vit-name">Iodine</div><div class="vit-tagline">Thyroid hormones · Energy conversion · Metabolism</div></div>
+            <span class="vit-badge">Trace Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Cells convert food to energy</li><li>Normal thyroid function</li><li>Production of thyroid hormones</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Hypothyroidism, infertility</li><li>Puffy, scaly dry skin</li><li>Coarse, thinning hair</li><li>Confusion, hoarseness</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Iodized salt (main source)</li><li>Seafood: cod, sea bass, haddock</li><li>Dairy products, kelp</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mcg)</th><th>Upper Limit (mcg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>100</td><td>—</td></tr><tr><td>Infants 6–12m</td><td>130</td><td>—</td></tr>
+                  <tr><td>Children 1–3y</td><td>90</td><td>200</td></tr><tr><td>Children 4–6y</td><td>90</td><td>300</td></tr><tr><td>Children 7–9y</td><td>90</td><td>400</td></tr>
+                  <tr><td>Boys/Girls 10–12y</td><td>100</td><td>600</td></tr>
+                  <tr><td>Boys/Girls 13–15y</td><td>140</td><td>900</td></tr>
+                  <tr><td>Boys/Girls 16–18y</td><td>140</td><td>1100</td></tr>
+                  <tr><td>Men/Women 19–59y</td><td>140</td><td>1100</td></tr>
+                  <tr><td>Pregnant women</td><td>220</td><td>1100</td></tr><tr><td>Lactating women</td><td>280</td><td>1100</td></tr>
+                  <tr><td>Men/Women ≥60y</td><td>140</td><td>1100</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selenium, Copper, Chromium, Fluoride, Manganese, Molybdenum as compact cards -->
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🥦</div>
+            <div class="vit-header-text"><div class="vit-name">Selenium</div><div class="vit-tagline">Antioxidant enzymes · Cancer prevention · Thyroid health</div></div>
+            <span class="vit-badge">Trace Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Makes antioxidant enzymes</li><li>Prevents cell damage</li><li>Protects against heavy metals</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Increased risk of thyroid disease</li><li>Keshan disease (heart condition)</li><li>Kashin-Beck disease (arthritis)</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Brazil nuts (very good source)</li><li>Fish, shellfish, red meat, chicken</li><li>Grains, eggs, garlic</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mcg)</th><th>Upper Limit (mcg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–6m</td><td>15</td><td>45</td></tr><tr><td>Infants 6–12m</td><td>20</td><td>60</td></tr>
+                  <tr><td>Children 1–6y</td><td>30</td><td>90–150</td></tr><tr><td>Children 7–9y</td><td>40</td><td>150</td></tr>
+                  <tr><td>Boys/Girls 10–12y</td><td>40</td><td>280</td></tr>
+                  <tr><td>Boys/Girls 13–18y</td><td>55</td><td>400</td></tr>
+                  <tr><td>Adults 19–59y</td><td>55</td><td>400</td></tr>
+                  <tr><td>Pregnant / Lactating</td><td>60 / 70</td><td>400</td></tr>
+                  <tr><td>Adults ≥60y</td><td>55</td><td>400</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🦞</div>
+            <div class="vit-header-text"><div class="vit-name">Copper</div><div class="vit-tagline">Red blood cells · Bones · Nerve & immune health</div></div>
+            <span class="vit-badge">Trace Mineral</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div class="vit-body-grid">
+              <div class="vit-info-card"><div class="vic-label">Benefits</div><ul><li>Works with iron to form red blood cells</li><li>Keeps blood vessels, nerves, bones healthy</li><li>Aids in iron absorption</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Deficiency</div><ul><li>Weakness, fatigue, frequent sickness</li><li>Brittle bones, pale skin</li><li>Premature gray hair, vision loss</li></ul></div>
+              <div class="vit-info-card"><div class="vic-label">Food Sources</div><ul><li>Oysters, shellfish, organ meats</li><li>Whole grains, beans, nuts, potatoes</li><li>Dark leafy greens, dried fruits, cocoa</li></ul></div>
+            </div>
+            <div class="rda-table-wrap">
+              <table class="rda-table">
+                <thead><tr><th>Age / Group</th><th>RDA (mcg)</th><th>Upper Limit (mcg)</th></tr></thead>
+                <tbody>
+                  <tr><td>Infants 0–12m</td><td>200–220</td><td>—</td></tr>
+                  <tr><td>Children 1–3y</td><td>340</td><td>1000</td></tr><tr><td>Children 4–6y</td><td>440</td><td>3000</td></tr><tr><td>Children 7–9y</td><td>700</td><td>5000</td></tr>
+                  <tr><td>Boys/Girls 10–12y</td><td>700</td><td>5000</td></tr>
+                  <tr><td>Boys/Girls 13–18y</td><td>890</td><td>8000</td></tr>
+                  <tr><td>Adults 19–59y</td><td>900</td><td>10000</td></tr>
+                  <tr><td>Pregnant / Lactating</td><td>1000 / 1300</td><td>10000</td></tr>
+                  <tr><td>Adults ≥60y</td><td>900</td><td>10000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="vit-item">
+          <div class="vit-header" onclick="toggleVit(this)">
+            <div class="vit-icon">🫘</div>
+            <div class="vit-header-text"><div class="vit-name">Chromium · Manganese · Fluoride · Molybdenum</div><div class="vit-tagline">Various essential trace minerals</div></div>
+            <span class="vit-badge">Trace Minerals</span>
+            <span class="vit-chevron">▾</span>
+          </div>
+          <div class="vit-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div class="vit-info-card">
+                <div class="vic-label">Chromium</div>
+                <p><strong>Role:</strong> Breaks down fats and carbs, aids insulin action and glucose metabolism.</p>
+                <p><strong>Sources:</strong> Meat, whole grains, broccoli, eggs, liver.</p>
+                <p><strong>RDA (Adults):</strong> Men 35 mcg / Women 25 mcg</p>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Manganese</div>
+                <p><strong>Role:</strong> Bone health, brain health, wound healing, nutrient metabolism.</p>
+                <p><strong>Sources:</strong> Leafy greens, legumes, nuts, shellfish, whole grains, tea.</p>
+                <p><strong>RDA (Adults):</strong> Men 2.3 mg / Women 1.8 mg | UL: 11 mg</p>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Fluoride</div>
+                <p><strong>Role:</strong> Reduces tooth decay, strengthens bones and teeth.</p>
+                <p><strong>Sources:</strong> Fluoridated water, seafood, tea.</p>
+                <p><strong>RDA (Adults):</strong> Men 4 mg / Women 3 mg | UL: 10 mg</p>
+              </div>
+              <div class="vit-info-card">
+                <div class="vic-label">Molybdenum</div>
+                <p><strong>Role:</strong> Breaks down medications and toxins, converts sulfites, eliminates harmful compounds.</p>
+                <p><strong>Sources:</strong> Dairy, grains, legumes, organ meats, potatoes.</p>
+                <p><strong>RDA (Adults):</strong> 0.045 mg | UL: 2 mg</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end trace minerals -->
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- LIFESTYLE -->
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <!-- SECTION: WATER INTAKE -->
+    <section class="edu-section" id="water">
+      <h2>Water Intake</h2>
+      <div class="carb-visual">
+        <div class="carb-img-box" style="background:linear-gradient(135deg,#e0f2fe 0%,#bae6fd 100%);">💧🫗</div>
+        <div class="carb-text">
+          <p>Water accounts for about 70% of our body weight. It is a constituent of blood and other vital body fluids. Water plays a key role in the elimination of body wastes and regulation of body temperature.</p>
+          <p>A normal healthy person needs to drink about <strong>8 glasses (2 litres) of water per day</strong>. During very hot weather and vigorous physical activity, this requirement increases as a considerable amount of water is lost through sweat.</p>
+        </div>
+      </div>
+
+      <div class="req-highlight">
+        <div class="req-item"><div class="req-val">2 L</div><div class="req-lbl">~8 glasses daily (average adult)</div></div>
+        <div class="req-item"><div class="req-val">70%</div><div class="req-lbl">Of body weight is water</div></div>
+        <div class="req-item"><div class="req-val">More</div><div class="req-lbl">Needed in heat, exercise, fever</div></div>
+      </div>
+
+      <h3>Benefits of Water</h3>
+      <ul>
+        <li>Maintains normal body temperature</li>
+        <li>Lubricates and cushions joints</li>
+        <li>Protects spinal cord and sensitive tissues</li>
+        <li>Eliminates waste through urination, perspiration, and bowel movements</li>
+      </ul>
+
+      <h3>When Do You Need More Water?</h3>
+      <ul>
+        <li>In hot climates</li>
+        <li>During physical activity or exercise</li>
+        <li>When running a fever</li>
+        <li>When experiencing diarrhea or vomiting</li>
+      </ul>
+
+      <div class="def-grid">
+        <div class="def-card">
+          <div class="def-title">✅ Signs of Good Hydration</div>
+          <p>You don't often feel thirsty. Your urine is colorless or light yellow.</p>
+        </div>
+        <div class="def-card">
+          <div class="def-title">⚠️ Signs of Dehydration</div>
+          <p>Headaches, dark urine, reduced physical performance, confusion and dizziness in extreme cases.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: SLEEP -->
+    <section class="edu-section" id="sleep">
+      <h2>Sleep</h2>
+      <div class="carb-visual">
+        <div class="carb-img-box" style="background:linear-gradient(135deg,#ede9fe 0%,#c4b5fd 100%);">😴🌙</div>
+        <div class="carb-text">
+          <p>Experts recommend that adults sleep between <strong>7 and 9 hours a night</strong>. Adults who sleep less than 7 hours a night may have more health issues than those who sleep 7 or more hours. Good sleep is a critical pillar of overall health.</p>
+        </div>
+      </div>
+
+      <h3>Recommended Sleep by Age</h3>
+      <div class="sleep-table-wrap">
+        <table class="sleep-table">
+          <thead><tr><th>Age Group</th><th>Recommended Hours</th></tr></thead>
+          <tbody>
+            <tr><td>Newborns (&lt;4 months)</td><td>Varies widely</td></tr>
+            <tr><td>Babies (4 months – 1 year)</td><td>12–16 hours/day</td></tr>
+            <tr><td>Children (1–2 years)</td><td>11–14 hours/day</td></tr>
+            <tr><td>Children (3–5 years)</td><td>10–13 hours/day</td></tr>
+            <tr><td>Children (6–12 years)</td><td>9–12 hours/day</td></tr>
+            <tr><td>Teens (13–18 years)</td><td>8–10 hours/day</td></tr>
+            <tr><td>Adults (18–64 years)</td><td>7–9 hours/night</td></tr>
+            <tr><td>Older adults (≥65 years)</td><td>7–8 hours/night</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Health Benefits of Sleep</h3>
+      <div class="type-cards">
+        <div class="type-card">
+          <div class="ct-label">Physical Health</div>
+          <p>Stay at a healthy weight, improve heart health and metabolism, reduce risk of type 2 diabetes, heart disease, high blood pressure, and stroke.</p>
+        </div>
+        <div class="type-card">
+          <div class="ct-label">Mental Health</div>
+          <p>Reduce stress and improve mood. Improve attention and memory to better perform daily activities.</p>
+        </div>
+        <div class="type-card">
+          <div class="ct-label">Immunity & Recovery</div>
+          <p>Get sick less often. Recover faster from illness. Lessen the risk of motor vehicle crashes and related injury.</p>
+        </div>
+      </div>
+
+      <h3>Better Sleep Habits</h3>
+      <ul>
+        <li>Go to bed and get up at the same time every day</li>
+        <li>Keep your bedroom quiet, relaxing, and at a cool temperature</li>
+        <li>Turn off electronic devices at least 30 minutes before bedtime</li>
+        <li>Avoid large meals and alcohol before bedtime</li>
+        <li>Avoid caffeine in the afternoon or evening</li>
+        <li>Exercise regularly and maintain a healthy diet</li>
+      </ul>
+
+      <div class="def-grid">
+        <div class="def-card">
+          <div class="def-title">⚠️ Signs of Poor Sleep Quality</div>
+          <p>Trouble falling asleep, repeatedly waking up during the night, feeling sleepy or tired even after getting enough sleep.</p>
+        </div>
+        <div class="def-card">
+          <div class="def-title">😷 Common Sleep Disorders</div>
+          <p>Insomnia, restless legs syndrome, narcolepsy, and sleep apnea.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: PHYSICAL ACTIVITY -->
+    <section class="edu-section" id="physical-activity">
+      <h2>Physical Activity</h2>
+      <div class="carb-visual">
+        <div class="carb-img-box" style="background:linear-gradient(135deg,#fce7f3 0%,#fbcfe8 100%);">🏃🏋️🚴</div>
+        <div class="carb-text">
+          <p>Being physically active helps all people, no matter their age, lead healthier lives. Some physical activity is better than doing none. By being more active throughout the day in relatively simple ways, people can quite easily achieve recommended activity levels.</p>
+        </div>
+      </div>
+
+      <h3>Recommended Activity by Age Group</h3>
+      <div class="activity-groups">
+        <div class="activity-group">
+          <div class="ag-label">👦 Children & Adolescents (5–17 years)</div>
+          <ul>
+            <li>At least <strong>60 minutes</strong> of moderate to vigorous activity daily</li>
+            <li>More than 60 min provides additional benefits</li>
+            <li>Include muscle and bone-strengthening activities at least <strong>3 times/week</strong></li>
+          </ul>
+        </div>
+        <div class="activity-group">
+          <div class="ag-label">🧑 Adults (18–64 years)</div>
+          <ul>
+            <li>At least <strong>150 min/week</strong> moderate-intensity, or <strong>75 min/week</strong> vigorous-intensity</li>
+            <li>For additional benefits: increase to 300 min/week moderate</li>
+            <li>Muscle-strengthening activities on <strong>2+ days/week</strong></li>
+          </ul>
+        </div>
+        <div class="activity-group">
+          <div class="ag-label">👴 Older Adults (≥65 years)</div>
+          <ul>
+            <li>Same as adults: at least 150 min/week moderate, or 75 min vigorous</li>
+            <li>Those with poor mobility: balance and fall-prevention activities <strong>3+ days/week</strong></li>
+            <li>Muscle-strengthening on 2+ days/week</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Benefits of Physical Activity</h3>
+      <ul>
+        <li>Prevents and manages noncommunicable diseases: cardiovascular diseases, cancer, diabetes</li>
+        <li>Reduces symptoms of depression and anxiety</li>
+        <li>Enhances brain health and overall well-being</li>
+        <li>In children: promotes bone health, muscle growth, and cognitive development</li>
+      </ul>
+
+      <div class="info-box">
+        <p><strong>Key Insight:</strong> Regular physical activity combined with good nutrition and sleep forms the foundation of a healthy lifestyle.</p>
+      </div>
+    </section>
+
+    <!-- SECTION: BODY METRICS -->
+    <section class="edu-section" id="body-metrics">
+      <h2>Body Metrics</h2>
+      <p>Body metrics help you understand your physical health using simple calculations based on your height, weight, age, and activity level. These metrics are widely used to assess fitness, fat levels, and daily energy needs.</p>
+
+      <!-- BMI -->
+      <h3>1. Body Mass Index (BMI)</h3>
+      <p>BMI is a measure that uses your height and weight to estimate whether your body weight is in a healthy range. It is calculated for adults aged 20 and older.</p>
+      <div class="metric-card">
+        <div class="mc-title">BMI Formula</div>
+        <div class="formula-box">BMI = Weight (kg) ÷ Height (m)²</div>
+        <div class="bmi-categories">
+          <div class="bmi-cat under">Underweight <span class="bc-range">BMI &lt; 18.5</span></div>
+          <div class="bmi-cat normal">Normal weight <span class="bc-range">18.5 – 24.9</span></div>
+          <div class="bmi-cat over">Overweight <span class="bc-range">25.0 – 29.9</span></div>
+          <div class="bmi-cat obese">Obese <span class="bc-range">≥ 30.0</span></div>
+        </div>
+      </div>
+
+      <!-- Body Fat -->
+      <h3>2. Body Fat Percentage</h3>
+      <p>Body fat percentage indicates how much of your body weight is made up of fat. It gives a more accurate picture than BMI alone. Estimated using the <strong>U.S. Navy Circumference Method</strong> (waist, neck, height; and hip for women).</p>
+      <div class="metric-card">
+        <div class="mc-title">U.S. Navy Formula</div>
+        <div class="formula-box">
+          Male: BF% = 86.010 × log₁₀(waist − neck) − 70.041 × log₁₀(height) + 36.76<br>
+          Female: BF% = 163.205 × log₁₀(waist + hip − neck) − 97.684 × log₁₀(height) − 78.387
+        </div>
+        <p style="font-size:12.5px;color:var(--muted);">All measurements in inches. Fat Mass = Body Weight × (BF%/100) · Lean Mass = Body Weight − Fat Mass</p>
+      </div>
+      <div class="bf-table-wrap">
+        <table class="bf-table">
+          <thead><tr><th>Category</th><th>Men</th><th>Women</th></tr></thead>
+          <tbody>
+            <tr><td>Essential Fat</td><td>2–5%</td><td>10–13%</td></tr>
+            <tr><td>Athletes</td><td>6–13%</td><td>14–20%</td></tr>
+            <tr><td>Fitness</td><td>14–17%</td><td>21–24%</td></tr>
+            <tr><td>Average</td><td>18–24%</td><td>25–31%</td></tr>
+            <tr><td>Obese</td><td>25%+</td><td>32%+</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-box">
+        <p><strong>Measurement Tips:</strong> Use a soft tape, level and snug, with no skin compression. Neck: just below the larynx. Waist: men at the navel, women at the narrowest point. Hip (women): widest point.</p>
+      </div>
+
+      <!-- BMR / TDEE -->
+      <h3>3. Daily Calorie Requirement (BMR & TDEE)</h3>
+      <p>Your <strong>Basal Metabolic Rate (BMR)</strong> is the minimum number of calories your body needs to function at rest — including breathing, blood circulation, and body temperature. BMR varies by age, sex, weight, and height. <strong>TDEE</strong> (Total Daily Energy Expenditure) includes your activity level.</p>
+
+      <div class="metric-card">
+        <div class="mc-title">Mifflin-St. Jeor Equation (BMR)</div>
+        <div class="formula-box">
+          Male: (10 × weight kg) + (6.25 × height cm) − (5 × age) + 5<br>
+          Female: (10 × weight kg) + (6.25 × height cm) − (5 × age) − 161
+        </div>
+        <p style="font-size:13px;color:#374151;margin-top:10px;margin-bottom:4px;"><strong>TDEE = BMR × Activity Factor</strong></p>
+        <p style="font-size:12.5px;color:var(--muted);">This gives the total daily calories needed to maintain your current weight.</p>
+      </div>
+
+      <div class="af-table-wrap">
+        <table class="af-table">
+          <thead><tr><th>Activity Level</th><th>Factor</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Sedentary</td><td>1.2</td><td>Little to no exercise</td></tr>
+            <tr><td>Lightly Active</td><td>1.375</td><td>Light exercise 1–3 days/week</td></tr>
+            <tr><td>Moderately Active</td><td>1.55</td><td>Moderate exercise 6–7 days/week</td></tr>
+            <tr><td>Very Active</td><td>1.725</td><td>Hard exercise every day, or twice a day</td></tr>
+            <tr><td>Extra Active</td><td>1.9</td><td>Very hard exercise, training, or physical job</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="req-highlight">
+        <div class="req-item"><div class="req-val">BMI</div><div class="req-lbl">Weight status indicator</div></div>
+        <div class="req-item"><div class="req-val">BF%</div><div class="req-lbl">Actual fat level in body</div></div>
+        <div class="req-item"><div class="req-val">TDEE</div><div class="req-lbl">Daily energy requirement</div></div>
+      </div>
+
+      <div class="info-box">
+        <p><strong>Tip:</strong> BMI gives a general idea, but body fat % and TDEE/BMR give a more personalised understanding of your health. Use them together for a complete picture.</p>
+      </div>
+
+      <div style="margin-top:32px;text-align:center;">
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;text-decoration:none;padding:13px 28px;border-radius:var(--radius-sm);font-weight:600;font-size:15px;transition:background 0.2s;" onmouseover="this.style.background='var(--teal-dark)'" onmouseout="this.style.background='var(--teal)'">
+          ← Build My Diet Plan
+        </a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// Accordion toggle
+function toggleVit(header) {
+  var item = header.closest('.vit-item');
+  item.classList.toggle('open');
+}
+
+// Sidebar scroll spy
+const sections = document.querySelectorAll('.edu-section, #nutrition-overview, #nutrition');
+const sideLinks = document.querySelectorAll('.sidebar-nav a');
+
+function updateActiveLink() {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 130) current = s.id;
+  });
+  sideLinks.forEach(a => {
+    const href = a.getAttribute('href');
+    if (href) a.classList.toggle('active', href === '#' + current);
+  });
+}
+window.addEventListener('scroll', updateActiveLink);
+
+window.addEventListener('load', () => {
+  const hash = window.location.hash;
+  if (hash) {
+    const target = document.querySelector(hash);
+    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+  }
+});
+</script>
+
+<!-- Auth state → nav -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const _app = initializeApp({
+  apiKey:"AIzaSyC5U_ZtL6ki_LnOS-L6U0jIkWj3vVny1XQ",
+  authDomain:"nutriplan-65582.firebaseapp.com",
+  projectId:"nutriplan-65582",
+  storageBucket:"nutriplan-65582.firebasestorage.app",
+  messagingSenderId:"851509980462",
+  appId:"1:851509980462:web:b18af741addba334ca1ebf"
+});
+const _auth = getAuth(_app);
+const _db = getFirestore(_app);
+
+async function isRestricted(email) {
+  if (!email) return false;
+  try {
+    const snap = await getDoc(doc(_db, "restrictedUsers", email.toLowerCase().replace(/[@.]/g, '_')));
+    return snap.exists();
+  } catch(e) { return false; }
+}
+
+onAuthStateChanged(_auth, async user => {
+  const signinBtn  = document.getElementById('nav-signin-btn');
+  const profileBtn = document.getElementById('nav-profile-btn');
+  if (user) {
+    if (await isRestricted(user.email)) {
+      await signOut(_auth);
+      localStorage.removeItem('np_auth');
+      signinBtn.classList.add('show');
+      profileBtn.classList.remove('show');
+      return;
+    }
+    localStorage.setItem('np_auth', 'signed-in');
+    signinBtn.classList.remove('show');
+    profileBtn.classList.add('show');
+    const initials = (user.displayName || user.email || '?').slice(0,2).toUpperCase();
+    profileBtn.textContent = initials;
+    // Check unread messages
+    try {
+      const snap = await getDocs(query(collection(_db, "messages", user.uid, "inbox"), where("read","==",false)));
+      if (!snap.empty) { const d = document.getElementById('nav-msg-dot'); if(d) d.style.display='block'; }
+    } catch(_){}
+  } else {
+    localStorage.removeItem('np_auth');
+    signinBtn.classList.add('show');
+    profileBtn.classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
